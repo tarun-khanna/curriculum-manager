@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: path.resolve(__dirname, './src/index.js'),
   output: {
-    path: path.resolve(__dirname, './docs'),
+    path: path.resolve(__dirname, './dist'),
     filename: 'bundle.[hash].js'
   },
   module: {
@@ -62,7 +62,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json', '.wasm', '.mjs', '*'],
   },
   devServer: {
-    contentBase: path.join(__dirname, './docs'),
+    contentBase: path.join(__dirname, './dist'),
     compress: true,
     port: 8000,
   },
