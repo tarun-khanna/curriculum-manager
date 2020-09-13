@@ -1,8 +1,10 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, useContext, createContext } from 'react';
 
+import { SnackbarContext } from './snackbar'
 import {
   deepClone, getEle, getNodesAtLevel, insertEle, removeEle, swap
 } from '../utilities';
+import { SNACK_TYPE } from '../utilities/constants';
 
 export const CurriculumContext = createContext(null);
 
@@ -12,13 +14,14 @@ const defaultCurriculum = {
 
 export const CurriculumProvider = ({ children }) => {
   const [curriculum, setCurriculum] = useState(defaultCurriculum);
+  const { showSnackbar } = useContext(SnackbarContext)
 
   const onIndent = (path) => {
     const pathArr = path.split('.');
     const activeIndex = +pathArr[pathArr.length - 1];
 
     if (activeIndex === 0) {
-      alert('Not possible');
+      showSnackbar('Indentation not possible', SNACK_TYPE.FAILURE);
       return;
     }
     const curriculumCopy = deepClone(curriculum);
@@ -38,7 +41,7 @@ export const CurriculumProvider = ({ children }) => {
     const pathArr = path.split('.');
 
     if (pathArr.length === 1) {
-      alert('Not possible');
+      showSnackbar('Outdentation not possible', SNACK_TYPE.FAILURE);
       return;
     }
     const curriculumCopy = deepClone(curriculum);
@@ -78,7 +81,7 @@ export const CurriculumProvider = ({ children }) => {
       /* Finding parent's previous sibling */
       const prevParentIndex = parentsArr.findIndex((ele) => ele.id === parentEleId) - 1;
       if (prevParentIndex === -1) {
-        alert('no suitable parent up the line');
+        showSnackbar('no suitable parent up the line', SNACK_TYPE.FAILURE);
         return;
       }
       const prevParent = parentsArr[prevParentIndex];
@@ -119,7 +122,7 @@ export const CurriculumProvider = ({ children }) => {
       const parentEleId = getEle(curriculumCopy, pathArr.join('.')).id;
       const nextParentIndex = parentsArr.findIndex((ele) => ele.id === parentEleId) + 1;
       if (nextParentIndex >= parentsArr.length) {
-        alert('no suitable parent down the line');
+        showSnackbar('no suitable parent down the line', SNACK_TYPE.FAILURE);
         return;
       }
       const nextParent = parentsArr[nextParentIndex];
@@ -172,7 +175,7 @@ export const CurriculumProvider = ({ children }) => {
         onAdd,
         onMoveUp,
         onMoveDown,
-        onUpdate
+        onUpdate,
       }}
     >
       {children}

@@ -3,26 +3,29 @@ import React, { useContext, useState } from 'react';
 import DataRow from './components/dataRow';
 import Header from './components/header';
 import { CurriculumContext } from './context/curriculum';
+import { SnackbarContext } from './context/snackbar';
+import { SNACK_TYPE } from './utilities/constants';
 
 import './global.css';
 
 const App = () => {
   const { curriculum, setCurriculum, onAdd } = useContext(CurriculumContext);
+  const { showSnackbar } = useContext(SnackbarContext)
   const [newEle, setNewEle] = useState('');
 
   const onSaveToLocal = (notify = false) => {
     localStorage.setItem('local-curriculum', JSON.stringify(curriculum));
     if (notify) {
-      alert('Saved to Local Strorage');
+      showSnackbar('Saved to Local Strorage', SNACK_TYPE.SUCCESS);
     }
   }
 
   const onLoadFromLocal = () => {
-    const localData = localStorage.getItem('local-curriculum')
+    const localData = JSON.parse(localStorage.getItem('local-curriculum'));
     if (localData && localData.children && localData.children.length) {
-      setCurriculum(JSON.parse(localData))
+      setCurriculum(localData);
     } else {
-      alert('No data Found in local storage.');
+      showSnackbar('No data Found in local storage', SNACK_TYPE.FAILURE);
     }
   }
 
@@ -38,11 +41,15 @@ const App = () => {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+
+    showSnackbar('JSON downloaded', SNACK_TYPE.SUCCESS)
   }
 
   const onCreateNewEl = () => {
+    if (!newEle) { return; }
     onAdd({ value: newEle, id: Math.random().toString(36).substr(2, 9) })
     setNewEle('');
+    showSnackbar('New Element added', SNACK_TYPE.SUCCESS)
   }
 
   const handleKeyPress = e => {
@@ -54,13 +61,14 @@ const App = () => {
   return (
     <div className="main-container">
       <Header />
-
       {/* Curriculum Listing */}
       {curriculum && curriculum.children.map((item, index) => (
-        <DataRow
-          item={item}
-          path={`${index}`}
-        />
+        <React.Fragment key={item.id}>
+          <DataRow
+            item={item}
+            path={`${index}`}
+          />
+        </React.Fragment>
       ))}
       <div className="solid-seperator" />
 

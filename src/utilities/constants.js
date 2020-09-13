@@ -1,0 +1,5 @@
+export const SNACK_TYPE = {
+  FAILURE: 'FAILURE',
+  SUCCESS: 'SUCCESS',
+  DEFAULT: 'DEFAULT'
+}

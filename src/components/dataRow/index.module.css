@@ -5,12 +5,20 @@
 }
 
 .icon {
-  margin-right: 2px;
+  margin-right: 4px;
   color: #666;
   padding: 4px 6px;
   cursor: pointer;
 }
 
+.icon:hover {
+  color: #5A8EC1;
+}
+
+.iconBin:hover {
+  color: #DF5F4C;
+}
+ 
 .textCol {
   display: flex;
 }
@@ -19,7 +27,6 @@
   width: 50px;
   display: flex;
   margin: 1px 20px 1px 0px;
-  background-color: #cccccc;
 }
 
 .dataInput {
@@ -27,22 +34,37 @@
   width: 100%;
 }
 
-.inputLevel1 {
-  font-family: Poppins-SemiBold;
-  font-size: 16px;
-}
-
-.inputLevel1 {
+.inputLevel1 input {
   font-family: Poppins-SemiBold;
   font-size: 16px;
   color: #0090B5;
 }
 
+.inputLevel1 .box {
+  background-color:  #D6E6EE;
+}
+
 .inputLevel2 {
+  padding-left: 50px;
+}
+
+.inputLevel2 input {
   font-size: 14px;
 }
 
+.inputLevel2 .box {
+  background-color: #D9E9E4;
+}
+
 .inputLevel3 {
+  padding-left: 100px;
+}
+
+.inputLevel3 input {
   font-size: 12px;
   color: #666;
+}
+
+.inputLevel3 .box {
+  background-color: #FAE5D2;
 }

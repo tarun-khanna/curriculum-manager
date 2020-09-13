@@ -22,7 +22,11 @@ const DataRow = ({
   }
 
   const nestedList = (item.children || []).map((ele, index) => {
-    return <DataRow item={ele} path={`${path}.${index}`} />
+    return (
+      <React.Fragment key={item.id}>
+        <DataRow item={ele} path={`${path}.${index}`} />
+      </React.Fragment>
+    )
   });
 
   let customStyles;
@@ -47,11 +51,11 @@ const DataRow = ({
           <div onClick={() => onMoveDown(path)} className={styles.icon}><i className="fas fa-arrow-down" /></div>
           <div onClick={() => onOutdent(path)} className={styles.icon}><i className="fas fa-arrow-left" /></div>
           <div onClick={() => onIndent(path)} className={styles.icon}><i className="fas fa-arrow-right" /></div>
-          <div onClick={() => onRemove(path)} className={styles.icon}><i className="fas fa-trash-alt" /></div>
+          <div onClick={() => onRemove(path)} className={clsx([styles.icon, styles.iconBin])}><i className="fas fa-trash-alt" /></div>
         </div>
-        <div className={clsx([styles.textCol, 'col-2'])} style={{ paddingLeft: `${(path.length - 1) * 32}px` }}>
-          <div className={styles.box} />
-          <input className={clsx([styles.dataInput, customStyles])} value={item.value} onChange={(ev) => onInputChange(ev.target.value)} />
+        <div className={clsx([styles.textCol, customStyles, 'col-2'])}>
+          <div className={clsx([styles.box, 'solid-box'])} />
+          <input className={clsx([styles.dataInput])} value={item.value} onChange={(ev) => onInputChange(ev.target.value)} />
         </div>
       </div>
       {nestedList}
