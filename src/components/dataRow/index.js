@@ -50,9 +50,7 @@ const DataRow = ({
           <div onClick={() => onRemove(path)} className={styles.icon}><i className="fas fa-trash-alt" /></div>
         </div>
         <div className={clsx([styles.textCol, 'col-2'])} style={{ paddingLeft: `${(path.length - 1) * 32}px` }}>
-          <div className={styles.box}>
-            {path}
-          </div>
+          <div className={styles.box} />
           <input className={clsx([styles.dataInput, customStyles])} value={item.value} onChange={(ev) => onInputChange(ev.target.value)} />
         </div>
       </div>

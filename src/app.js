@@ -19,7 +19,7 @@ const App = () => {
 
   const onLoadFromLocal = () => {
     const localData = localStorage.getItem('local-curriculum')
-    if (localData) {
+    if (localData && localData.children && localData.children.length) {
       setCurriculum(JSON.parse(localData))
     } else {
       alert('No data Found in local storage.');
@@ -45,6 +45,12 @@ const App = () => {
     setNewEle('');
   }
 
+  const handleKeyPress = e => {
+    if (e.key === 'Enter') {
+      onCreateNewEl();
+    }
+  }
+
   return (
     <div className="main-container">
       <Header />
@@ -60,7 +66,7 @@ const App = () => {
 
       {/* Action Buttons */}
       <div className="footer">
-        <input placeholder="Enter new Standard..." className="heading" value={newEle} onChange={(ev) => setNewEle(ev.target.value)} />
+        <input placeholder="Enter new Standard..." className="heading" value={newEle} onKeyPress={handleKeyPress} onChange={(ev) => setNewEle(ev.target.value)} />
         <button className="save-button" onClick={onCreateNewEl}> {/* Create random string id */}
           <i className="fas fa-plus-square button-icon" />Add a Standard
         </button>
