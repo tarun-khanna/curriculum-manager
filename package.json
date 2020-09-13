@@ -34,9 +34,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:start": "webpack-dev-server",
-    "build": "rm -rf dist && webpack --config webpack.config.js",
+    "build": "rm -rf docs && webpack --config webpack.config.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d docs"
   },
   "author": "",
   "license": "ISC"
