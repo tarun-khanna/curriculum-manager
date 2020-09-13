@@ -16,8 +16,33 @@
 }
 
 .box {
-  width: 40px;
-  height: 100%;
-  margin-right: 20px;
+  width: 50px;
+  display: flex;
+  margin: 1px 20px 1px 0px;
   background-color: #cccccc;
+}
+
+.dataInput {
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.inputLevel1 {
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+}
+
+.inputLevel1 {
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  color: #0090B5;
+}
+
+.inputLevel2 {
+  font-size: 14px;
+}
+
+.inputLevel3 {
+  font-size: 12px;
+  color: #666;
 }

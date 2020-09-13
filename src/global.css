@@ -26,6 +26,12 @@ p {
   margin: 0px;
 }
 
+button {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
 input {
   outline: none;
   border: none;
@@ -36,24 +42,26 @@ input {
   flex-direction: column;
   justify-content: center;
   min-height: 100vh;
-  padding: 0px 5%;
+  margin: auto;
+  max-width: 900px;
+  padding: 0px 2%;
 }
 
 
 .row {
   display: flex;
-  padding-top: 12px;
-  padding-bottom: 12px;
   border-bottom: 1px solid #dddddd;
 }
 
 .col-1{
-  width: 20%;
+  width: 24%;
+  padding-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .col-2 {
-  width: 80%;;
-  padding-left: 12px;
+  width: 76%;
 }
 
 .heading {
@@ -70,3 +78,45 @@ input {
   border-bottom: 1px solid #dddddd;
 }
 
+.footer {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.save-button {
+  padding: 12px 0px;
+  background-color: #5A8EC1;
+  font-size: 16px;
+  color: white;
+  margin-top: 8px;
+}
+
+.button-icon {
+  margin-right: 8px;
+}
+
+.local-btns-container {
+  display: flex;
+  margin-top: 8px;
+  justify-content: space-between;
+}
+
+.local-btn {
+  padding: 12px 0px;
+  width: 33%;
+  color: white;
+}
+
+.local-btn-load {
+  background-color: #FDBC4B;
+}
+
+.local-btn-save {
+  background-color: #5FD3AB;
+}
+
+.local-btn-download {
+  background-color: #E67E22;
+}
