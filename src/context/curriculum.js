@@ -1,25 +1,30 @@
 import React, { useState, createContext } from 'react';
-import { deepClone, findLastChildIndex, getEle, insertEle, removeEle, swap } from '../utilities';
+
+import {
+  deepClone, getEle, getNodesAtLevel, insertEle, removeEle, swap
+} from '../utilities';
 
 export const CurriculumContext = createContext(null);
 
+const defaultCurriculum = {
+  children: []
+};
+
 export const CurriculumProvider = ({ children }) => {
-  const [curriculum, setCurriculum] = useState({
-    children: []
-  });
+  const [curriculum, setCurriculum] = useState(defaultCurriculum);
 
   const onIndent = (path) => {
     const pathArr = path.split('.');
-    const activeIndex = pathArr[pathArr.length - 1];
+    const activeIndex = +pathArr[pathArr.length - 1];
 
-    if (activeIndex === '0') {
-      alert('not possible');
+    if (activeIndex === 0) {
+      alert('Not possible');
       return;
     }
     const curriculumCopy = deepClone(curriculum);
 
     // finding prevSibling path
-    pathArr[pathArr.length - 1] = +activeIndex - 1;
+    pathArr[pathArr.length - 1] = activeIndex - 1;
     const prevSiblingPath = pathArr.join('.');
 
     const activeData = getEle(curriculum, path);
@@ -29,33 +34,112 @@ export const CurriculumProvider = ({ children }) => {
     setCurriculum(updatedCurriculum);
   }
 
-  const onRemove = (path) => {
-    const curriculumCopy = deepClone(curriculum);
-    const updatedCurriculum = removeEle(curriculumCopy, path)
-    setCurriculum(updatedCurriculum);
-  }
-
   const onOutdent = (path) => {
     const pathArr = path.split('.');
 
     if (pathArr.length === 1) {
-      alert('not possible');
+      alert('Not possible');
       return;
     }
     const curriculumCopy = deepClone(curriculum);
 
     // finding parent path
     pathArr.pop();
-    const prevParent = pathArr.pop();
-    const newParentPath = pathArr.join('.');
+    const parentIndex = pathArr.pop();
+    const grandParentPath = pathArr.join('.');
 
     const activeData = getEle(curriculum, path);
-    let updatedCurriculum = insertEle(curriculumCopy, activeData, newParentPath, +prevParent + 1);
+    let updatedCurriculum = insertEle(curriculumCopy, activeData, grandParentPath, +parentIndex + 1);
     updatedCurriculum = removeEle(updatedCurriculum, path)
 
     setCurriculum(updatedCurriculum);
   }
 
+  const onMoveUp = (path) => {
+    let curriculumCopy = deepClone(curriculum);
+
+    const pathArr = path.split('.');
+    const prevSibPathArr = path.split('.');
+    prevSibPathArr[prevSibPathArr.length - 1] = +prevSibPathArr[prevSibPathArr.length - 1] - 1;
+    const prevSibling = getEle(curriculumCopy, prevSibPathArr.join('.'));
+
+    if (prevSibling) {
+      /* If previous sibling exists, swap */
+      curriculumCopy = swap(curriculumCopy, pathArr.join('.'), prevSibPathArr.join('.'));
+    } else {
+      /* Else, move the element to parent's previous sibling */
+      pathArr.pop();
+      const level = pathArr.length;
+
+      const parentsArr = [];
+      getNodesAtLevel(curriculumCopy, level, (obj) => parentsArr.push(obj));
+
+      const parentEleId = getEle(curriculumCopy, pathArr.join('.')).id;
+      /* Finding parent's previous sibling */
+      const prevParentIndex = parentsArr.findIndex((ele) => ele.id === parentEleId) - 1;
+      if (prevParentIndex === -1) {
+        alert('no suitable parent up the line');
+        return;
+      }
+      const prevParent = parentsArr[prevParentIndex];
+      const activeElement = getEle(curriculumCopy, path);
+
+      /* Inserting element at new position */
+      if (prevParent.children) {
+        prevParent.children.push(activeElement)
+      } else {
+        prevParent.children = [activeElement];
+      }
+
+      /* Removing element from old position */
+      curriculumCopy = removeEle(curriculumCopy, path);
+    }
+    setCurriculum(curriculumCopy);
+  }
+
+  const onMoveDown = (path) => {
+    let curriculumCopy = deepClone(curriculum);
+
+    const pathArr = path.split('.');
+    const nextSibPathArr = path.split('.');
+    nextSibPathArr[nextSibPathArr.length - 1] = +nextSibPathArr[nextSibPathArr.length - 1] + 1;
+    const nextSibling = getEle(curriculumCopy, nextSibPathArr.join('.'));
+
+    if (nextSibling) {
+      /* If next sibling exists, swap */
+      curriculumCopy = swap(curriculumCopy, pathArr.join('.'), nextSibPathArr.join('.'));
+    } else {
+      /* Else, move the element to parent's next sibling */
+      pathArr.pop();
+      const level = pathArr.length;
+
+      const parentsArr = [];
+      getNodesAtLevel(curriculumCopy, level, (obj) => parentsArr.push(obj));
+
+      const parentEleId = getEle(curriculumCopy, pathArr.join('.')).id;
+      const nextParentIndex = parentsArr.findIndex((ele) => ele.id === parentEleId) + 1;
+      if (nextParentIndex >= parentsArr.length) {
+        alert('no suitable parent down the line');
+        return;
+      }
+      const nextParent = parentsArr[nextParentIndex];
+
+      const activeElement = getEle(curriculumCopy, path)
+
+      /* Inserting element at new position */
+      if (nextParent.children) {
+        nextParent.children.unshift(activeElement)
+      } else {
+        nextParent.children = [activeElement];
+      }
+
+      /* Removing element from old position */
+      curriculumCopy = removeEle(curriculumCopy, path);
+    }
+    setCurriculum(curriculumCopy);
+  }
+
+  /* Updating input fields (onChange) */
   const onUpdate = (path, value) => {
     const curriculumCopy = deepClone(curriculum);
     const activeData = getEle(curriculumCopy, path);
@@ -63,70 +147,18 @@ export const CurriculumProvider = ({ children }) => {
     setCurriculum(curriculumCopy);
   }
 
+  /* Adding new element to curriculum */
   const onAdd = (data) => {
     const curriculumCopy = deepClone(curriculum);
     const updatedCurriculum = insertEle(curriculumCopy, data, '');
     setCurriculum(updatedCurriculum);
   }
 
-
-  const onMoveUp = (path) => {
-    const pathArr = path.split('.');
-    const activeIndex = +pathArr[pathArr.length - 1];
-
+  /* Removing element from curriculum */
+  const onRemove = (path) => {
     const curriculumCopy = deepClone(curriculum);
-    let updatedCurriculum;
-
-    if (activeIndex !== 0) {
-      // moving up withing same level among children of parent
-      const pathArrB = [...pathArr];
-      pathArrB[pathArrB.length - 1] = activeIndex - 1
-      updatedCurriculum = swap(curriculumCopy, pathArr.join('.'), pathArrB.join('.'))
-    } else {
-      if (pathArr.every((item) => +item === 0)) {
-        alert('not possible');
-        return;
-      }
-
-      // moving up to previous parent
-
-
-      pathArr.pop(); // to get to parent level
-      const reversedPathArr = [...pathArr].reverse();
-      const level = reversedPathArr.findIndex(item => +item !== 0);
-
-      pathArr.splice(-level, level);
-      pathArr[pathArr.length - 1] = pathArr[pathArr.length - 1] - 1;
-      // pathArr.splice(-level - 1, 1, )
-      let newParentPath = pathArr.join('.');
-      for (let i = 0; i < level; ++i) {
-        debugger;
-        const lastChildIndex = findLastChildIndex(curriculumCopy, newParentPath);
-        if (lastChildIndex === -1) {
-          alert('not possible');
-          return;
-        }
-        newParentPath = newParentPath + '.' + lastChildIndex;
-      }
-
-
-
-
-      // const parentIndex = +pathArr[pathArr.length - 1];
-
-
-      // pathArr[pathArr.length - 1] = parentIndex - 1
-      // const newParentPath = pathArr.join('.');
-      debugger;
-      const activeData = getEle(curriculumCopy, path);
-      updatedCurriculum = insertEle(curriculumCopy, activeData, newParentPath);
-      updatedCurriculum = removeEle(updatedCurriculum, path);
-
-
-
-
-    }
-    setCurriculum(updatedCurriculum)
+    const updatedCurriculum = removeEle(curriculumCopy, path);
+    setCurriculum(updatedCurriculum);
   }
 
   return (
@@ -139,45 +171,11 @@ export const CurriculumProvider = ({ children }) => {
         onOutdent,
         onAdd,
         onMoveUp,
+        onMoveDown,
         onUpdate
       }}
     >
       {children}
     </CurriculumContext.Provider>
   )
-}
-
-
-
-
-
-
-
-/* const obj = {
-  children: [
-    {
-      "value": "Numbers",
-      "children": [
-        {
-          "value": "Deserunt qui pariatur nisi tempor ipsum labore dolore."
-        }
-      ]
-    },
-    {
-      "value": "Measurement",
-      "children": [
-        {
-          "value": "Sint mollit est ea ullamco occaecat qui consequat."
-        },
-        {
-          "value": "Dolore exercitation est veniam proident pariatur ad ad.",
-          "children": [
-            {
-              "value": "Occaecat et consequat elit adipisicing est fugiat sint ullamco ut irure mollit incididunt."
-            }
-          ]
-        }
-      ]
-    }
-  ]
-} */
+};

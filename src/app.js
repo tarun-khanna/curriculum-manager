@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+
 import DataRow from './components/dataRow';
 import Header from './components/header';
 import { CurriculumContext } from './context/curriculum';
@@ -9,14 +10,19 @@ const App = () => {
   const { curriculum, setCurriculum, onAdd } = useContext(CurriculumContext);
   const [newEle, setNewEle] = useState('');
 
-  const onSaveToLocal = () => {
+  const onSaveToLocal = (notify = false) => {
     localStorage.setItem('local-curriculum', JSON.stringify(curriculum));
+    if (notify) {
+      alert('Saved to Local Strorage');
+    }
   }
 
   const onLoadFromLocal = () => {
     const localData = localStorage.getItem('local-curriculum')
     if (localData) {
       setCurriculum(JSON.parse(localData))
+    } else {
+      alert('No data Found in local storage.');
     }
   }
 
@@ -34,14 +40,16 @@ const App = () => {
     downloadAnchorNode.remove();
   }
 
-  React.useEffect(() => {
-    onLoadFromLocal()
-  }, [])
+  const onCreateNewEl = () => {
+    onAdd({ value: newEle, id: Math.random().toString(36).substr(2, 9) })
+    setNewEle('');
+  }
 
   return (
-
     <div className="main-container">
       <Header />
+
+      {/* Curriculum Listing */}
       {curriculum && curriculum.children.map((item, index) => (
         <DataRow
           item={item}
@@ -49,9 +57,11 @@ const App = () => {
         />
       ))}
       <div className="solid-seperator" />
+
+      {/* Action Buttons */}
       <div className="footer">
         <input placeholder="Enter new Standard..." className="heading" value={newEle} onChange={(ev) => setNewEle(ev.target.value)} />
-        <button className="save-button" onClick={() => onAdd({ value: newEle })}>
+        <button className="save-button" onClick={onCreateNewEl}> {/* Create random string id */}
           <i className="fas fa-plus-square button-icon" />Add a Standard
         </button>
         <div className="local-btns-container">
@@ -59,7 +69,7 @@ const App = () => {
             <i className="fas fa-file-upload button-icon" />
             Load JSON
           </button>
-          <button className="local-btn local-btn-save" onClick={onSaveToLocal}>
+          <button className="local-btn local-btn-save" onClick={() => onSaveToLocal(true)}>
             <i className="fas fa-save button-icon" />
             Save JSON
           </button>
@@ -69,6 +79,7 @@ const App = () => {
           </button>
         </div>
       </div>
+
     </div>
   )
 }

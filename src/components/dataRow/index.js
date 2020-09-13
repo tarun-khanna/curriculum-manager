@@ -13,8 +13,10 @@ const DataRow = ({
     onIndent,
     onOutdent,
     onUpdate,
-    onMoveUp
+    onMoveUp,
+    onMoveDown
   } = useContext(CurriculumContext);
+
   const onInputChange = (value) => {
     onUpdate(path, value);
   }
@@ -25,17 +27,15 @@ const DataRow = ({
 
   let customStyles;
 
-  switch (path.length) {
+  switch (path.split('.').length) {
     case 1: {
       customStyles = styles.inputLevel1;
       break;
     }
-
-    case 3: {
+    case 2: {
       customStyles = styles.inputLevel2;
       break;
     }
-
     default: customStyles = styles.inputLevel3;
   }
 
@@ -43,7 +43,8 @@ const DataRow = ({
     <>
       <div className="row">
         <div className={clsx(['col-1', styles.iconsColumn])}>
-          <div onClick={() => onMoveUp(path)} className={styles.icon}><i className="fas fa-arrows-alt" /></div>
+          <div onClick={() => onMoveUp(path)} className={styles.icon}><i className="fas fa-arrow-up" /></div>
+          <div onClick={() => onMoveDown(path)} className={styles.icon}><i className="fas fa-arrow-down" /></div>
           <div onClick={() => onOutdent(path)} className={styles.icon}><i className="fas fa-arrow-left" /></div>
           <div onClick={() => onIndent(path)} className={styles.icon}><i className="fas fa-arrow-right" /></div>
           <div onClick={() => onRemove(path)} className={styles.icon}><i className="fas fa-trash-alt" /></div>

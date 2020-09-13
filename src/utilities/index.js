@@ -16,7 +16,7 @@ export const removeEle = (curriculum, path) => {
 
 export const insertEle = (curriculum, data, parentPath, pos = null) => {
   const parent = getEle(curriculum, parentPath);
-  debugger;
+
   if (parent.children) {
     if (pos) parent.children.splice(pos, 0, data);
     else parent.children.push(data);
@@ -39,11 +39,10 @@ export const swap = (curriculum, pathA, pathB) => {
   return curriculum;
 }
 
-export const findLastChildIndex = (curriculum, path) => {
-  const ele = getEle(curriculum, path);
-  debugger;
-  if (ele && ele.children) {
-    return ele.children.length - 1;
+export const getNodesAtLevel = (obj, level, callback) => {
+  if (level === 0) {
+    callback(obj);
+  } else if (obj && obj.children) {
+    obj.children.forEach((child) => getNodesAtLevel(child, level - 1, callback))
   }
-  return -1;
 }

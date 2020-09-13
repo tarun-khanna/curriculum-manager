@@ -6,5 +6,6 @@ import { CurriculumProvider } from './context/curriculum';
 ReactDom.render(
   <CurriculumProvider>
     <App />
-  </CurriculumProvider>, document.getElementById('root')
+  </CurriculumProvider>,
+  document.getElementById('root')
 );
