@@ -27,7 +27,7 @@ export const CurriculumProvider = ({ children }) => {
     const curriculumCopy = deepClone(curriculum);
 
     // finding prevSibling path
-    pathArr[pathArr.length - 1] = activeIndex - 1;
+    pathArr[pathArr.length - 1] = `${activeIndex - 1}`;
     const prevSiblingPath = pathArr.join('.');
 
     const activeData = getEle(curriculum, path);
@@ -48,11 +48,11 @@ export const CurriculumProvider = ({ children }) => {
 
     // finding parent path
     pathArr.pop();
-    const parentIndex = pathArr.pop();
+    const parentIndex = +pathArr.pop();
     const grandParentPath = pathArr.join('.');
 
     const activeData = getEle(curriculum, path);
-    let updatedCurriculum = insertEle(curriculumCopy, activeData, grandParentPath, +parentIndex + 1);
+    let updatedCurriculum = insertEle(curriculumCopy, activeData, grandParentPath, parentIndex + 1);
     updatedCurriculum = removeEle(updatedCurriculum, path)
 
     setCurriculum(updatedCurriculum);

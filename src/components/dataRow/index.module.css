@@ -44,20 +44,12 @@
   background-color:  #D6E6EE;
 }
 
-.inputLevel2 {
-  padding-left: 50px;
-}
-
 .inputLevel2 input {
   font-size: 14px;
 }
 
 .inputLevel2 .box {
   background-color: #D9E9E4;
-}
-
-.inputLevel3 {
-  padding-left: 100px;
 }
 
 .inputLevel3 input {

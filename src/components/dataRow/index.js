@@ -8,6 +8,7 @@ const DataRow = ({
   item,
   path
 }) => {
+  const pathLength = path.split('.').length; // This is the element nested level
   const {
     onRemove,
     onIndent,
@@ -30,8 +31,7 @@ const DataRow = ({
   });
 
   let customStyles;
-
-  switch (path.split('.').length) {
+  switch (pathLength) {
     case 1: {
       customStyles = styles.inputLevel1;
       break;
@@ -53,7 +53,7 @@ const DataRow = ({
           <div onClick={() => onIndent(path)} className={styles.icon}><i className="fas fa-arrow-right" /></div>
           <div onClick={() => onRemove(path)} className={clsx([styles.icon, styles.iconBin])}><i className="fas fa-trash-alt" /></div>
         </div>
-        <div className={clsx([styles.textCol, customStyles, 'col-2'])}>
+        <div className={clsx([styles.textCol, customStyles, 'col-2'])} style={{ paddingLeft: `${pathLength * 40}px` }}>
           <div className={clsx([styles.box, 'solid-box'])} />
           <input className={clsx([styles.dataInput])} value={item.value} onChange={(ev) => onInputChange(ev.target.value)} />
         </div>
